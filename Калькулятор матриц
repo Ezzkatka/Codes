@@ -1,0 +1,1048 @@
+using System;
+using System.IO;
+using System.Text;
+using System.Linq;
+
+
+namespace Калькулятор_матриц
+{
+    class Program
+    {
+        static bool checker()
+        {
+            Console.WriteLine("Введите 0 если хотите вернуться к командам или 1, чтобы закрыть");
+            bool check = false;
+            while (check != true)
+            {
+                string a = Console.ReadLine();
+                if (a != "1" && a != "0")
+                {
+                    Console.WriteLine("Введите 0 если хотите вернуться к командам или 1, чтобы закрыть");
+                }
+                else if (a == "1")
+                {
+                    return true;
+                }
+                else { return false; }
+            }
+            return true;
+        }
+
+        private static double GetDets(int[,] matrix, int column)
+        {
+            if (column == 1)
+                return matrix[0, 0];
+            double ans = 0;
+
+            for (int i = 0; i < column; i++)
+            {
+                int[,] myMatrix = new int[column - 1, column - 1];
+                for (int j = 1; j < column; j++)
+                {
+                    for (int z = 0; z < column; z++)
+                    {
+                        if (z == i) continue;
+                        myMatrix[j - 1, z > i ? z - 1 : z] = matrix[j, z];
+                    }
+                }
+                ans += Math.Pow(-1, (2 + i)) * matrix[0, i] * GetDets(myMatrix, column - 1);
+            }
+            return ans;
+        }
+        static int sled(int[,] pervaya)
+        {
+            int sum=0;
+            for (int i = 0; i < pervaya.GetLength(0); i++)
+            {
+                for (int j = 0; j < pervaya.GetLength(1); j++)
+                {
+                    if (i == j) sum += pervaya[i, j];
+                }
+            }
+            return sum;
+        }
+
+        static void firstWay(int count, ref int[,] pervaya, ref int[,] vtoraya)
+        {
+
+            int h, w,h1,w1, number;
+            string a = "";
+            h = 0;
+            w = 0;
+            h1 = 0;
+            w1 = 0;
+            int el = 0;
+            bool check = false;
+
+            
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine("Введите количество строк в матрице:");
+                while (check != true)
+                {
+                    a = Console.ReadLine();
+                    if (Int32.TryParse(a, out number) == true)
+                    {
+                        if (Int32.Parse(a) > 0)
+                        {
+                            if (i == 0)
+                            {
+                                h = Int32.Parse(a);
+                            }
+                            else
+                            {
+                                h1 = Int32.Parse(a);
+                            }
+                            check = true;
+                        }
+                        else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                    }
+                    else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                }
+
+                check = false;
+
+                Console.WriteLine("\n Введите количество столбцов в матрице:");
+
+                while (check != true)
+                {
+                    a = Console.ReadLine();
+                    if (Int32.TryParse(a, out number) == true)
+                    {
+                        if (Int32.Parse(a) > 0)
+                        {
+                            if (i == 0)
+                            {
+                                w = Int32.Parse(a);
+                            }
+                            else
+                            {
+                                w1 = Int32.Parse(a);
+                            }
+                            check = true;
+                        }
+                        else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                    }
+                    else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                }
+                Console.WriteLine("\n Введите элементы матрицы {0}x{1}", h, w);
+
+                check = false;
+
+                if (i == 0)
+                {
+                    pervaya = new int[h, w];
+                }
+                else
+                {
+                    vtoraya = new int[h1, w1];
+                }
+                int first, second;
+                if (i == 0)
+                {
+                    first = h;
+                    second = w;
+                }
+                else 
+                {
+                    first = h1;
+                    second = w1;
+                }
+                for (int b = 0; b < first; b++)
+                {
+                    for (int c = 0; c < second; c++)
+                    {
+                        while (check != true)
+                        {
+                            a = Console.ReadLine();
+                            if (Int32.TryParse(a, out number) == true)
+                            {
+                                    el = Int32.Parse(a);
+                                    check = true;
+                            }
+                            else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                        }
+                        check = false;
+                        if (i == 0)
+                        {
+                            pervaya[b, c] = el;
+                        }
+                        else
+                        {
+                            vtoraya[b, c] = el;
+                        }
+                    }
+                }
+                check = false;
+            }
+        
+        }
+
+        static void secondWay(int count, ref int[,] pervaya, ref int[,] vtoraya)
+        {
+            int h, w, h1, w1, number;
+            string a = "";
+            h = 0;
+            w = 0;
+            h1 = 0;
+            w1 = 0;
+            bool check = false;
+
+
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine("Введите количество строк в матрице:");
+                while (check != true)
+                {
+                    a = Console.ReadLine();
+                    if (Int32.TryParse(a, out number) == true)
+                    {
+                        if (Int32.Parse(a) > 0)
+                        {
+                            if (i == 0)
+                            {
+                                h = Int32.Parse(a);
+                            }
+                            else
+                            {
+                                h1 = Int32.Parse(a);
+                            }
+                            check = true;
+                        }
+                        else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                    }
+                    else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                }
+
+                check = false;
+
+                Console.WriteLine("\n Введите количество столбцов в матрице:");
+
+                while (check != true)
+                {
+                    a = Console.ReadLine();
+                    if (Int32.TryParse(a, out number) == true)
+                    {
+                        if (Int32.Parse(a) > 0)
+                        {
+                            if (i == 0)
+                            {
+                                w = Int32.Parse(a);
+                            }
+                            else
+                            {
+                                w1 = Int32.Parse(a);
+                            }
+                            check = true;
+                        }
+                        else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                    }
+                    else Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                }
+
+                check = false;
+
+                if (i == 0)
+                {
+                    pervaya = new int[h, w];
+                }
+                else
+                {
+                    vtoraya = new int[h1, w1];
+                }
+                Random elem = new Random();
+                int first, second;
+                if (i == 0)
+                {
+                    first = h;
+                    second = w;
+                }
+                else
+                {
+                    first = h1;
+                    second = w1;
+                }
+
+                for (int b = 0; b < first; b++)
+                {
+                    for (int c = 0; c < second; c++)
+                    {
+                        if (i == 0) pervaya[b, c] = elem.Next(100);
+                        else vtoraya[b, c] = elem.Next(100);
+                    }
+                }
+                check = false;
+            }
+        }
+
+        static void thirdWay(int count, ref int[,] pervaya, ref int[,] vtoraya)
+        {
+            bool check = false;
+            string allLines = string.Empty;
+            string path = "";
+            int number=0;
+            int el = 0;
+            int h, w,h1,w1;
+            string a = "";
+            h = 0;
+            w = 0;
+            h1 = 0;
+            w1 = 0;
+
+
+
+            Console.WriteLine("Введите путь до файла:");
+            while (check != true)
+            {
+                path = Console.ReadLine();
+                if (File.Exists(path) == true)
+                {
+                    check = true;
+                }
+                else
+                {
+                    Console.WriteLine("Неккоректный путь до файла");
+                }
+            }
+            
+            StreamReader file = new StreamReader(path);
+            allLines = file.ReadToEnd();
+
+            string[] subs = allLines.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            check = false;
+
+            Console.WriteLine();
+            for (int i = 0; i < count; i++)
+            {
+                while (check != true)
+                {
+                    if (Int32.TryParse(subs[0], out number) == true)
+                    {
+                        if (Int32.Parse(subs[0]) > 0)
+                        {
+                            if (i == 0)
+                            {
+                                h = Int32.Parse(subs[0]);
+                                check = true;
+                            }
+                            else
+                            {
+                                h1 = Int32.Parse(subs[0]);
+                                check = true;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Неверное значение, измените файл и попробуйте еще раз \n");
+                            Console.WriteLine("Введите путь до файла:");
+                            while (check != true)
+                            {
+                                path = Console.ReadLine();
+                                if (File.Exists(path) == true)
+                                {
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Неккоректный путь до файла");
+                                }
+                                
+                            }
+                            file = new StreamReader(path);
+                            allLines = file.ReadToEnd();                          
+                            subs = allLines.Split(' ');
+                            check = false;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неверное значение, измените файл и попробуйте еще раз \n");
+                        Console.WriteLine("Введите путь до файла:");
+                        while (check != true)
+                        {
+                            path = Console.ReadLine();
+                            if (File.Exists(path) == true)
+                            {
+                                check = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Неккоректный путь до файла");
+                            }
+                            
+                        }
+                        file = new StreamReader(path);
+                        allLines = file.ReadToEnd();                        
+                        subs = allLines.Split(new[]{' ', '\t' },StringSplitOptions.RemoveEmptyEntries);
+                        check = false;
+                    }
+                }
+                check = false;
+                while (check != true)
+                {
+                    try
+                    {
+                        if (Int32.TryParse(subs[1], out number) == true)
+                        {
+                            if (Int32.Parse(subs[1]) > 0)
+                            {
+                                if (i == 0)
+                                {
+                                    w = Int32.Parse(subs[1]);
+                                    check = true;
+                                }
+                                else
+                                {
+                                    w1 = Int32.Parse(subs[1]);
+                                    check = true;
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Неверное значение, измените файл и попробуйте еще раз \n");
+                                Console.WriteLine("Введите путь до файла:");
+                                while (check != true)
+                                {
+                                    path = Console.ReadLine();
+                                    if (File.Exists(path) == true)
+                                    {
+                                        check = true;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Неккоректный путь до файла");
+                                    }
+
+                                }
+                                file = new StreamReader(path);
+                                allLines = file.ReadToEnd();
+                                subs = allLines.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                                check = false;
+                            }
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("Неверное значение, измените файл и попробуйте еще раз \n");
+                            Console.WriteLine("Введите путь до файла:");
+                            while (check != true)
+                            {
+                                path = Console.ReadLine();
+                                if (File.Exists(path) == true)
+                                {
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Неккоректный путь до файла");
+                                }
+                            }
+                            check = false;
+                            file = new StreamReader(path);
+                            allLines = file.ReadToEnd();
+
+                            subs = allLines.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        }
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        Console.WriteLine("Неверное значение, измените файл и попробуйте еще раз \n");
+                        while (check != true)
+                        {
+                            path = Console.ReadLine();
+                            if (File.Exists(path) == true)
+                            {
+                                check = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Неккоректный путь до файла");
+                            }
+
+                        }
+                        file = new StreamReader(path);
+                        allLines = file.ReadToEnd();
+                        subs = allLines.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        check = false;
+                    } 
+                    
+                }
+                check = false;
+
+                if (i == 0)
+                {
+                    pervaya = new int[h, w];
+                }
+                else
+                {
+                    vtoraya = new int[h1, w1];
+                }
+                int first, second;
+                if (i == 0)
+                {
+                    first = h;
+                    second = w;
+                }
+                else
+                {
+                    first = h1;
+                    second = w1;
+                }
+                int k = 2;
+
+                for (int b = 0; b < first; b++)
+                {
+                    for (int c = 0; c < second; c++)
+                    {
+                        while (check != true)
+                        {
+                            try {
+                                if (Int32.TryParse(subs[k], out number) == true)
+                                {
+                                    el = Int32.Parse(subs[k]);
+                                    check = true;
+                                    k++;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                                    Console.WriteLine("Введите путь до файла:");
+                                    while (check != true)
+                                    {
+                                        path = Console.ReadLine();
+                                        if (File.Exists(path) == true)
+                                        {
+                                            check = true;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Неккоректный путь до файла");
+                                        }
+                                    }
+                                    check = false;
+                                    file = new StreamReader(path);
+                                    allLines = file.ReadToEnd();
+                                    subs = allLines.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                                }
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                Console.WriteLine("Вы ввели неправильное значение, попробуйте еще раз \n");
+                                Console.WriteLine("Введите путь до файла:");
+                                while (check != true)
+                                {
+                                    path = Console.ReadLine();
+                                    if (File.Exists(path) == true)
+                                    {
+                                        check = true;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Неккоректный путь до файла");
+                                    }
+                                }
+                                check = false;
+                                file = new StreamReader(path);
+                                allLines = file.ReadToEnd();
+                                subs = allLines.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                            }
+                        }
+                        check = false;
+                        if (i == 0)
+                        {
+                            pervaya[b, c] = el;
+                        }
+                        else
+                        {
+                            vtoraya[b, c] = el;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        static void Main(string[] args)
+        {
+
+            bool end = false;
+
+            while (end != true)
+            {
+
+                int[,] pervaya=new int[0,0];
+                int[,] vtoraya = new int[0, 0];
+
+                Console.WriteLine("Выберите операцию, которую хотите выполнить:");
+
+                string[] tasks = new string[7] { "1. нахождение следа матрицы;", "2. транспонирование матрицы;", "3. сумма двух матриц;",
+         "4. разность двух матриц;", "5. произведение двух матриц;", "6. умножение матрицы на число;", "7. нахождение определителя матрицы." };
+                string[] numbers = { "1", "2", "3", "4", "5", "6", "7" };
+                string[] ways = { "1. Ввод вручную", "2. Рандомная генерация", "3. Считывание из файла" };
+
+                foreach (string s in tasks)
+                {
+                    Console.WriteLine(s);
+                }
+                Console.WriteLine();
+
+                bool check = false;
+                string task = string.Empty;
+                int way = 0;
+
+                //проверка правильного ввода команды 
+                while (check != true)
+                {
+                    task = Console.ReadLine();
+                    if (numbers.Any(n => n == task) == true) check = true;
+                    else Console.WriteLine("Вы ввели неправильную команду, попробуйте ещё раз \n");
+                }
+
+                check = false;
+
+                Console.WriteLine();
+                Console.WriteLine("Выберите способ задания матриц:");
+
+                foreach (string s in ways)
+                {
+                    Console.WriteLine(s);
+                }
+                Console.WriteLine();
+
+                while (check != true)
+                {
+                    way = Int32.Parse(Console.ReadLine());
+                    if (way == 1 || way == 2 || way == 3) check = true;
+                    else Console.WriteLine("Вы ввели неправильный способ, попробуйте еще раз \n");
+                }
+                check = false;
+
+                int realTask = Int32.Parse(task);;
+                Console.WriteLine();
+                int sum = 0;
+
+                switch (realTask)
+                {
+                    case 1:
+
+                        if (way == 1)
+                        {
+                            while (check != true)
+                            {
+                                firstWay(1, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(0) == pervaya.GetLength(1))
+                                {
+                                    sum = sled(pervaya);
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("След ищется только для квадратных матриц, попробуйте еще раз");
+                                    firstWay(1, ref pervaya, ref vtoraya);
+                                }
+                            }
+                        }
+
+                        if (way == 2)
+                        {
+                            while (check != true)
+                            {
+                                secondWay(1, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(0) == pervaya.GetLength(1))
+                                {
+                                    sum = sled(pervaya);
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("След ищется только для квадратных матриц, попробуйте еще раз");
+                                    secondWay(1, ref pervaya, ref vtoraya);
+                                }
+                            }
+                        }
+
+                        if (way == 3)
+                        {
+                            while (check != true)
+                            {
+                                thirdWay(1, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(0) == pervaya.GetLength(1))
+                                {
+                                    sum = sled(pervaya);
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("След ищется только для квадратных матриц, попробуйте еще раз");
+                                    thirdWay(1, ref pervaya, ref vtoraya);
+                                }
+                            }
+                        }
+                        Console.WriteLine("След матрицы равен {0}", sum);
+
+                        Console.WriteLine("Введите 0 если хотите вернуться к командам или 1, чтобы закрыть");
+                        check = false;
+                        end = checker();
+
+                        break;
+
+                    case 2:
+
+                        if (way == 1)
+                        {
+                            firstWay(1, ref pervaya, ref vtoraya);
+                            
+                        }
+
+                        if(way == 2)
+                        {
+                            secondWay(1, ref pervaya, ref vtoraya);
+                            
+                        }
+
+                        if (way == 3) 
+                        {
+                            thirdWay(1, ref pervaya, ref vtoraya);
+                           
+                        }
+
+                        int[,] help = new int[pervaya.GetLength(1), pervaya.GetLength(0)];
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < pervaya.GetLength(1); j++)
+                            {
+                                help[j, i] = pervaya[i, j];
+                            }
+                        }
+
+
+                        Console.WriteLine("\n Транспонированная матрица");
+
+                        for (int i = 0; i < help.GetLength(0); i++, Console.WriteLine())
+                            for (int j = 0; j < help.GetLength(1); j++)
+                                Console.Write("{0,3}", help[i, j]);
+
+                        end = checker();
+
+                        break;
+
+                    case 3:
+
+                        check = false;
+                        if (way == 1)
+                        {
+                            while (check != true)
+                            {
+                                firstWay(2, ref pervaya, ref vtoraya);
+                                if(pervaya.GetLength(0) != vtoraya.GetLength(0) || pervaya.GetLength(1) != vtoraya.GetLength(1))
+                                {
+                                    Console.WriteLine("Матрицы должны быть одинаковый размерности");
+                                }
+                                else
+                                {
+                                    check = true;
+                                }
+                            }
+                        }
+                        if (way == 2)
+                        {
+                            secondWay(2, ref pervaya, ref vtoraya);
+                            if (pervaya.GetLength(0) != vtoraya.GetLength(0) || pervaya.GetLength(1) != vtoraya.GetLength(1))
+                            {
+                                Console.WriteLine("Матрицы должны быть одинаковый размерности");
+                            }
+                            else
+                            {
+                                check = true;
+                            }
+                        }
+                        if (way == 3)
+                        {
+                            thirdWay(2, ref pervaya, ref vtoraya);
+                            if (pervaya.GetLength(0) != vtoraya.GetLength(0) || pervaya.GetLength(1) != vtoraya.GetLength(1))
+                            {
+                                Console.WriteLine("Матрицы должны быть одинаковый размерности");
+                            }
+                            else
+                            {
+                                check = true;
+                            }
+                        }
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < pervaya.GetLength(1); j++)
+                            {
+                                pervaya[i, j] += vtoraya[i, j];
+                            }
+                        }
+
+                        Console.WriteLine("\n Матрица суммы");
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++, Console.WriteLine())
+                            for (int j = 0; j < pervaya.GetLength(1); j++)
+                                Console.Write("{0,3}", pervaya[i, j]);
+
+                        end = checker();
+                        break;
+
+                    case 4:
+
+
+                        check = false;
+                        if (way == 1)
+                        {
+                            while (check != true)
+                            {
+                                firstWay(2, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(0) != vtoraya.GetLength(0) || pervaya.GetLength(1) != vtoraya.GetLength(1))
+                                {
+                                    Console.WriteLine("Матрицы должны быть одинаковый размерности");
+                                }
+                                else
+                                {
+                                    check = true;
+                                }
+                            }
+                        }
+                        if (way == 2)
+                        {
+                            secondWay(2, ref pervaya, ref vtoraya);
+                            if (pervaya.GetLength(0) != vtoraya.GetLength(0) || pervaya.GetLength(1) != vtoraya.GetLength(1))
+                            {
+                                Console.WriteLine("Матрицы должны быть одинаковый размерности");
+                            }
+                            else
+                            {
+                                check = true;
+                            }
+                        }
+                        if (way == 3)
+                        {
+                            thirdWay(2, ref pervaya, ref vtoraya);
+                            if (pervaya.GetLength(0) != vtoraya.GetLength(0) || pervaya.GetLength(1) != vtoraya.GetLength(1))
+                            {
+                                Console.WriteLine("Матрицы должны быть одинаковый размерности");
+                            }
+                            else
+                            {
+                                check = true;
+                            }
+                        }
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < pervaya.GetLength(1); j++)
+                            {
+                                pervaya[i, j] -= vtoraya[i, j];
+                            }
+                        }
+
+                        Console.WriteLine("\n Матрица разности");
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++, Console.WriteLine())
+                            for (int j = 0; j < pervaya.GetLength(1); j++)
+                                Console.Write("{0,3}", pervaya[i, j]);
+
+                        end = checker();
+                        break;
+
+
+                    case 5:
+
+                        check = false;
+
+                        if (way == 1)
+                        {
+                            while (check != true)
+                            {
+                                firstWay(2, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(1) != vtoraya.GetLength(0))
+                                {
+                                    Console.WriteLine("Количество столбцов первой матрицы должно совпадать с количеством строк второй");
+                                }
+                                else
+                                {
+                                    check = true;
+                                }
+                            }
+                        }
+                        if(way == 2)
+                        {
+                            while (check != true)
+                            {
+                                secondWay(2, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(1) != vtoraya.GetLength(0) )
+                                {
+                                    Console.WriteLine("Количество столбцов первой матрицы должно совпадать с количеством строк второй");
+                                }
+                                else
+                                {
+                                    check = true;
+                                }
+                            }
+                        }
+
+                        if(way == 3)
+                        {
+                            while (check != true)
+                            {
+                                thirdWay(2, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(1) != vtoraya.GetLength(0))
+                                {
+                                    Console.WriteLine("Количество столбцов первой матрицы должно совпадать с количеством строк второй");
+                                }
+                                else
+                                {
+                                    check = true;
+                                }
+                            }
+                        }
+
+                        int[,] composition = new int[pervaya.GetLength(0), vtoraya.GetLength(1)];
+
+                        int sum1 = 0;
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < vtoraya.GetLength(1); j++)
+                            {
+                                for (int a = 0; a < pervaya.GetLength(1); a++)
+                                {
+                                    sum1 += pervaya[i, a] * vtoraya[a, j];
+                                }
+                                composition[i, j] = sum1;
+                                sum1 = 0;
+                            }
+                        }
+
+                        Console.WriteLine("\n Матрица произведения");
+
+                        for (int i = 0; i < composition.GetLength(0); i++, Console.WriteLine())
+                            for (int j = 0; j < composition.GetLength(1); j++)
+                                Console.Write("{0,4}", composition[i, j]);
+
+                        end = checker();
+                        break;
+
+
+
+                    case 6:
+                        check = false;
+                        int number = 0;
+
+                        if (way == 1)
+                        {
+                            firstWay(1, ref pervaya, ref vtoraya);
+                        }
+                        if(way == 2)
+                        {
+                            secondWay(1, ref pervaya, ref vtoraya);
+                        }
+                        if (way == 3)
+                        {
+                            thirdWay(1, ref pervaya, ref vtoraya);
+                        }
+
+                        Console.WriteLine("Введите число, на которое нужно умножить матрицу");
+
+                        int maxi = pervaya.Cast<int>().Max();
+                        int k = 0;
+
+                        while (check != true)
+                        {
+                            string k1 = Console.ReadLine();
+                            if (Int32.TryParse(k1,out number) == true)
+                            {
+                                k = Int32.Parse(k1);
+                                int b = k * maxi;
+                                if (b / k != maxi) { Console.WriteLine("Произошло переполнение, попробуйте ввести меньшее число");}
+                                else
+                                {
+                                    check = true;
+                                }
+                            }
+                            else Console.WriteLine("Вы ввели неправильное значение");
+                        }
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < pervaya.GetLength(1); j++)
+                            {
+                                pervaya[i, j] *= k;
+                            }
+                        }
+
+                        Console.WriteLine("\n Матрица умноженная на число");
+
+                        for (int i = 0; i < pervaya.GetLength(0); i++, Console.WriteLine())
+                            for (int j = 0; j < pervaya.GetLength(1); j++)
+                                Console.Write("{0,3}", pervaya[i, j]);
+
+                        end = checker();
+                        break;
+
+
+                    case 7:
+
+                        check = false;
+
+                        if (way == 1)
+                        {
+                            while (check != true)
+                            {
+                                firstWay(1, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(0)==pervaya.GetLength(1))
+                                {
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Количество строк и столбцов должно совпадать");
+                                }
+                            }
+                        }
+                        if (way == 2)
+                        {
+                            while (check != true)
+                            {
+                                secondWay(1, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(0) == pervaya.GetLength(1))
+                                {
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Количество строк и столбцов должно совпадать");
+                                }
+                            }
+                        }
+                        if (way == 3)
+                        {
+                            while (check != true)
+                            {
+                                thirdWay(1, ref pervaya, ref vtoraya);
+                                if (pervaya.GetLength(0) == pervaya.GetLength(1))
+                                {
+                                    check = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Количество строк и столбцов должно совпадать");
+                                }
+                            }
+                        }
+
+                        double result = GetDets(pervaya, pervaya.GetLength(0));
+
+                        Console.WriteLine("\nОпределитель матрицы равен {0}",result);
+
+                        end = checker();
+                        break;
+                }
+
+            }
+        }
+    }
+}
