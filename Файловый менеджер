@@ -1,0 +1,642 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections;
+using System.Text;
+
+namespace Файловый_менеджер
+{
+    class Program
+    {
+
+        static void Main(string[] args)
+        {
+            bool exit = true;
+
+            while (exit)
+            {
+
+                Console.WriteLine("Введите цифру нужной вам команды:");
+                Console.WriteLine();
+
+                string[] encodings = new string[3] { "utf-7", "utf-8", "utf-32" };
+
+                string dirName = "C:\\";
+                string[] dirs = Directory.GetDirectories(dirName);
+                string fileName = string.Empty;
+
+                string[] tasks = new string[9] { "1. Просмотр списка дисков компьютера и выбор диска","2. Переход в другую директорию и просмотр списка файлов в ней",
+            "3. Вывод содержимого текстового файла в консоль в предложенных кодировках","4. Kопирование файла","5. Перемещение файла в нужную директорию","6. Удаление файла",
+                "7. Cоздание простого текстового файла в предложенных кодировках",
+                "8. Kонкатенация содержимого двух или более текстовых файлов и вывод результата в консоль в кодировке UTF-8","9. Выход"};
+                for (int i = 0; i < tasks.Length; i++)
+                {
+                    Console.WriteLine(tasks[i]);
+                }
+
+                bool check = false;
+                string task = string.Empty;
+                string[] nubmers = new string[9] { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+                Console.WriteLine();
+                while (check != true)
+                {
+                    task = Console.ReadLine();
+                    if (nubmers.Any(n => n == task) == true) check = true;
+                    else Console.WriteLine("Вы ввели неправильную команду, попробуйте еще раз");
+                }
+                check = false;
+
+                if (task == "1")
+                {
+                    Console.WriteLine("Введите название нужного диска");
+
+                    DriveInfo[] allDrives = DriveInfo.GetDrives();
+
+                    foreach (DriveInfo d in allDrives)
+                    {
+                        Console.WriteLine("Drive {0}", d.Name);
+                    }
+
+                    Console.WriteLine();
+                    while (check != true)
+                    {
+                        task = Console.ReadLine();
+                        if (allDrives.Any(n => n.Name.Substring(0, 2) == task) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно");
+                    }
+                    Console.WriteLine("Диск {0} успешно выбран", task);
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w =="1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+                }
+
+                if (task == "2")
+                {
+                    Console.WriteLine("Список директорий \n");
+
+
+                    if (Directory.Exists(dirName))
+                    {
+                        foreach (string s in dirs)
+                        {
+                            Console.WriteLine(s);
+                        }
+
+                        Console.WriteLine();
+
+                        while (check != true)
+                        {
+                            Console.WriteLine("Введите название нужной папки:");
+                            task = Console.ReadLine();
+                            if (dirs.Any(n => n.Substring(3) == task) == true) check = true;
+                            else Console.WriteLine("Данные введены неверно");
+                        }
+
+                        Console.WriteLine("Файлы в выбранной папке:");
+                        string[] allFiles = Directory.GetFiles(dirName.Substring(0, 3) + task);
+
+                        foreach (string folder in allFiles)
+                        {
+                            Console.WriteLine(folder.Substring((dirName.Substring(0, 3) + task).Length + 1));
+                        }
+                    }
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w == "1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+
+                }
+
+                if (task == "3")
+                {
+
+                    foreach (string s in dirs)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужной папки:");
+                        task = Console.ReadLine();
+                        if (dirs.Any(n => n.Substring(3) == task) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+
+                    Console.WriteLine("Текстовые файлы в выбранной папке:");
+                    string[] allFiles = Directory.GetFiles(dirName.Substring(0, 3) + task, "*.txt");
+
+                    foreach (string folder in allFiles)
+                    {
+                        Console.WriteLine(folder.Substring((dirName.Substring(0, 3) + task).Length + 1));
+                    }
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужного файла c расширением:");
+                        fileName = Console.ReadLine();
+                        if (allFiles.Any(n => n.Substring((dirName.Substring(0, 3) + task).Length + 1) == fileName) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+
+                    Console.WriteLine("Выберите нужную кодировку: ");
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Console.WriteLine(encodings[i]);
+                    }
+                    Console.WriteLine();
+
+                    string encoding = string.Empty;
+                    while (check != true)
+                    {
+                        encoding = Console.ReadLine();
+
+                        if (encodings.Any(n => n == encoding) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+
+                    Console.WriteLine("\n Содержимое выбранного файла:");
+
+                    string[] readText = File.ReadAllLines(dirName.Substring(0, 3) + task + @"\" + fileName, Encoding.GetEncoding(encoding));
+                    foreach (string s in readText)
+                    {
+                        Console.WriteLine(s);
+                    }
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w == "1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+                }
+
+
+
+                char[] invalidFileChars = Path.GetInvalidFileNameChars();
+
+
+                if (task == "4")
+                {
+
+                    foreach (string s in dirs)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужной папки:");
+                        task = Console.ReadLine();
+                        if (dirs.Any(n => n.Substring(3) == task) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+
+                    Console.WriteLine("Текстовые файлы в выбранной папке:");
+                    string[] allFiles = Directory.GetFiles(dirName.Substring(0, 3) + task, "*.txt");
+
+                    foreach (string folder in allFiles)
+                    {
+                        Console.WriteLine(folder.Substring((dirName.Substring(0, 3) + task).Length + 1));
+                    }
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужного файла c расширением для копирования:");
+                        fileName = Console.ReadLine();
+                        if (allFiles.Any(n => n.Substring((dirName.Substring(0, 3) + task).Length + 1) == fileName) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+                    string newFile = string.Empty;
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нового файла c расширением, в который будет произведено копирование:");
+                        newFile = Console.ReadLine();
+
+                        if (invalidFileChars.Any(n => newFile.Contains(n) == false) && newFile.Length > 4 && newFile.Substring(newFile.Length - 4) == ".txt") check = true;
+                        else Console.WriteLine("Неккоректное название файла \n");
+                    }
+
+                    File.Copy(dirName.Substring(0, 3) + task + @"\" + fileName, dirName.Substring(0, 3) + task + @"\" + newFile);
+
+                    Console.WriteLine("Копирование в файл {0} произведено успешно", dirName.Substring(0, 3) + task + @"\" + newFile);
+
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w == "1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+                }
+
+                if (task == "5")
+                {
+
+                    foreach (string s in dirs)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужной папки:");
+                        task = Console.ReadLine();
+                        if (dirs.Any(n => n.Substring(3) == task) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+
+                    Console.WriteLine("Текстовые файлы в выбранной папке:");
+                    string[] allFiles = Directory.GetFiles(dirName.Substring(0, 3) + task, "*.txt");
+
+                    foreach (string folder in allFiles)
+                    {
+                        Console.WriteLine(folder.Substring((dirName.Substring(0, 3) + task).Length + 1));
+                    }
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужного файла c расширением для перемещения:");
+                        fileName = Console.ReadLine();
+                        if (allFiles.Any(n => n.Substring((dirName.Substring(0, 3) + task).Length + 1) == fileName) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно  \n");
+                    }
+                    Console.WriteLine();
+                    check = false;
+
+                    foreach (string s in dirs)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    Console.WriteLine();
+
+                    string newFolder = string.Empty;
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Выберите название папки, в которую нужно переместить файл:");
+                        newFolder = Console.ReadLine();
+                        if (dirs.Any(n => n.Substring(3) == newFolder) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    File.Move(dirName.Substring(0, 3) + task + @"\" + fileName, dirName.Substring(0, 3) + newFolder + @"\" + fileName);
+                    Console.WriteLine("Файл был успешно перемещен в папку {0}", dirName.Substring(0, 3) + newFolder + @"\");
+
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w == "1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+                }
+
+                if (task == "6")
+                {
+                    foreach (string s in dirs)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужной папки:");
+                        task = Console.ReadLine();
+                        if (dirs.Any(n => n.Substring(3) == task) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+
+                    Console.WriteLine("Текстовые файлы в выбранной папке:");
+                    string[] allFiles = Directory.GetFiles(dirName.Substring(0, 3) + task, "*.txt");
+
+                    foreach (string folder in allFiles)
+                    {
+                        Console.WriteLine(folder.Substring((dirName.Substring(0, 3) + task).Length + 1));
+                    }
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужного файла для удаления:");
+                        fileName = Console.ReadLine();
+                        if (allFiles.Any(n => n.Substring((dirName.Substring(0, 3) + task).Length + 1) == fileName) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно  \n");
+                    }
+                    Console.WriteLine();
+
+                    File.Delete(dirName.Substring(0, 3) + task + @"\" + fileName);
+
+                    Console.WriteLine("Удаление файла {0} было произведено успешно", fileName);
+
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w == "1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+
+                }
+
+                if (task == "7")
+                {
+                    foreach (string s in dirs)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите папки, в которой нужно создать текстовый файл:");
+                        task = Console.ReadLine();
+                        if (dirs.Any(n => n.Substring(3) == task) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+
+                    string newFile = string.Empty;
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нового файла c расширением:");
+                        newFile = Console.ReadLine();
+
+                        if (invalidFileChars.Any(n => newFile.Contains(n) == false) && newFile.Length > 4 && newFile.Substring(newFile.Length - 4) == ".txt") check = true;
+                        else Console.WriteLine("Неккоректное название файла \n");
+                    }
+
+                    check = false;
+
+                    Console.WriteLine("Выберите нужную кодировку: ");
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Console.WriteLine(encodings[i]);
+                    }
+                    Console.WriteLine();
+
+                    string encoding = string.Empty;
+                    while (check != true)
+                    {
+                        encoding = Console.ReadLine();
+
+                        if (encodings.Any(n => n == encoding) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    File.WriteAllText(dirName.Substring(0, 3) + task + @"\" + newFile, "", Encoding.GetEncoding(encoding));
+
+                    Console.WriteLine("Файл был успешно создан");
+
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w == "1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+                }
+
+                string reader = string.Empty;
+
+                if (task == "8")
+                {
+
+                    foreach (string s in dirs)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    Console.WriteLine();
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нужной папки:");
+                        task = Console.ReadLine();
+                        if (dirs.Any(n => n.Substring(3) == task) == true) check = true;
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    check = false;
+
+                    Console.WriteLine("Текстовые файлы в выбранной папке:");
+                    string[] allFiles = Directory.GetFiles(dirName.Substring(0, 3) + task, "*.txt");
+
+                    foreach (string folder in allFiles)
+                    {
+                        Console.WriteLine(folder.Substring((dirName.Substring(0, 3) + task).Length + 1));
+                    }
+                    Console.WriteLine();
+
+                    string newFile = string.Empty;
+
+                    while (check != true)
+                    {
+                        Console.WriteLine("Введите название нового файла c расширением, в котором будет конкатенация:");
+                        newFile = Console.ReadLine();
+
+                        if (invalidFileChars.Any(n => newFile.Contains(n) == false) && newFile.Length > 4 && newFile.Substring(newFile.Length - 4) == ".txt") check = true;
+                        else Console.WriteLine("Неккоректное название файла \n");
+
+                    }
+
+                    check = false;
+                    Console.WriteLine("Выберите файлы для конкатенации, если выбор закончен, введите stop");
+                    string stop = string.Empty;
+                    int ok = 0;
+
+                    while (check != true || stop != "stop")
+                    {
+                        fileName = Console.ReadLine();
+                        if (fileName == "stop")
+                        {
+                            stop = "stop";
+                            break;
+                        }
+                        if (allFiles.Any(n => n.Substring((dirName.Substring(0, 3) + task).Length + 1) == fileName) == true)
+                        {
+                            reader = File.ReadAllText(dirName.Substring(0, 3) + task + @"\" + fileName);
+                            File.AppendAllText(dirName.Substring(0, 3) + task + @"\" + newFile, reader);
+                            check = true;
+                            ok++;
+                        }
+                        else Console.WriteLine("Данные введены неверно \n");
+                    }
+                    Console.WriteLine();
+
+                    Console.WriteLine("Конкатенация произведена успешно \n");
+
+                    Console.WriteLine("Содержимое полученного файла:");
+
+                    string[] readText = File.ReadAllLines(dirName.Substring(0, 3) + task + @"\" + newFile, Encoding.UTF8);
+                    foreach (string s in readText)
+                    {
+                        Console.WriteLine(s);
+                    }
+
+                    check = false;
+
+                    Console.WriteLine("\n Для возвращения к списку команд введите 1, для выхода введите 0");
+                    while (!check)
+                    {
+                        string w = Console.ReadLine();
+                        if (w == "1")
+                        {
+                            check = true;
+                        }
+                        else if (w == "0")
+                        {
+                            check = true;
+                            exit = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные введены неверно");
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+}
